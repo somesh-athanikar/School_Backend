@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const authRoutes = require('./Routes/AuthRoutes');
@@ -11,6 +12,8 @@ const homeworkRoutes = require('./Routes/homeworkRoute');
 const { errorHandler } = require('./Middlewares/errHandlarMiddleware');
 
 const app = express();
+const uploadDir = path.resolve(__dirname, 'src', 'uploads');
+fs.mkdirSync(uploadDir, { recursive: true });
 
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
@@ -20,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', (req, res, next) => {
   res.setHeader('Content-Disposition', 'inline');
   next();
-}, express.static(path.join(__dirname, 'src/uploads')));
+}, express.static(uploadDir));
 
 // Routes
 app.use('/api/auth', authRoutes);

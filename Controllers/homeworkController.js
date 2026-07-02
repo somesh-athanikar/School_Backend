@@ -88,9 +88,10 @@ exports.deleteHomework = asyncHandler(async (req, res) => {
     where: { id: Number(req.params.id) },
     include: { attachments: true },
   });
+  const uploadDir = path.resolve(__dirname, '..', 'src', 'uploads');
   // Delete physical files
   hw.attachments.forEach(a => {
-    const filePath = path.join(__dirname, '../../src/uploads', a.filename);
+    const filePath = path.join(uploadDir, a.filename);
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
   });
   await prisma.homework.delete({ where: { id: Number(req.params.id) } });

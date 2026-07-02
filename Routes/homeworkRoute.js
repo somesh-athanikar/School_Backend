@@ -1,14 +1,18 @@
 const router = require('express').Router();
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { protect } = require('../Middlewares/authMiddleware');
 const {
   getHomework, getAllHomework, getHomeworkById,
   createHomework, updateHomework, publishHomework, deleteHomework,
 } = require('../Controllers/homeworkController');
 
+const uploadDir = path.resolve(__dirname, '..', 'src', 'uploads');
+fs.mkdirSync(uploadDir, { recursive: true });
+
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'src/uploads/'),
+  destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {
     const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
     cb(null, unique + path.extname(file.originalname));
